@@ -4,6 +4,8 @@ import { UpdateUserDto } from '../models/dto/update-user.dto';
 import { Repository } from 'typeorm';
 import UserEntity from '../models/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import UsersOutput from 'src/models/dto/output/users.output';
+import { serialize } from 'v8';
 
 
 @Injectable()
@@ -21,12 +23,35 @@ export class UsersService {
     return this.userRepo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number){
+    const userEntity = await this.userRepo.findOne({where: { id } });
+
+    const userOutput = new UsersOutput();
+    userOutput.id = userEntity.id;
+    userOutput.name = userEntity.name;
+    userOutput.active = userEntity.active;
+    userOutput.createdAt = userEntity.createdAt;
+    userOutput.updatedAt = userEntity.updateAt;
+
+    return userOutput;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+ async updateName(id: number, name: string) {
+    const userEntity = await this.userRepo.findOne({where: { id } });
+
+    userEntity.name = name;
+
+    const userSaved = await this.userRepo.save(userEntity);
+
+    const userOutput = new UsersOutput();
+
+    userOutput.id = userEntity.id;
+    userOutput.name = userEntity.name;
+    userOutput.active = userEntity.active;
+    userOutput.createdAt = userEntity.createdAt;
+    userOutput.updatedAt = userEntity.updateAt;
+
+    return userOutput
   }
 
   remove(id: number) {

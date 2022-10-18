@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../models/dto/create-user.dto';
 import { UpdateUserDto } from '../models/dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiCreatedResponse } from '@nestjs/swagger';
+import UsersOutput from 'src/models/dto/output/users.output';
 
 @ApiTags('Users')
 @Controller('users')
@@ -20,17 +21,19 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiCreatedResponse({ type: UsersOutput })
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @ApiCreatedResponse({ type: UsersOutput })
+  updateName(@Param('id') id: string, @Query('name') name: string) {
+    return this.usersService.updateName(+id, name);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remova(+id);
   }
 }
