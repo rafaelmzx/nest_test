@@ -1,23 +1,23 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
-import { CreateUserDto } from '../models/dto/create-user.dto';
-import { UpdateUserDto } from '../models/dto/update-user.dto';
-import { ApiTags, ApiCreatedResponse } from '@nestjs/swagger';
-import UsersOutput from 'src/models/dto/output/users.output';
+import { ApiTags, ApiCreatedResponse, ApiProperty } from '@nestjs/swagger';
+import UsersOutput from '../models/dto/output/users.output';
+import UsersInput from '../models/dto/input/users.input';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
   @Get()
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Post()
+  @ApiProperty()
+  save(@Body() input: UsersInput){
+    return this.usersService.save(input);
   }
 
   @Get(':id')
@@ -34,6 +34,6 @@ export class UsersController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remova(+id);
+    return this.usersService.remove(+id);
   }
 }

@@ -1,40 +1,42 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../models/dto/create-user.dto';
-import { UpdateUserDto } from '../models/dto/update-user.dto';
 import { Repository } from 'typeorm';
 import UserEntity from '../models/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import UsersOutput from 'src/models/dto/output/users.output';
-import { serialize } from 'v8';
 
+
+import UsersOutput from '../models/dto/output/users.output';
+import UsersConverter from '../models/converters/users.converter';
+import UsersInput from '../models/dto/input/users.input';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepo: Repository<UserEntity>,
+    private readonly usersConverter: UsersConverter,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
-
-  findAll() {
+ findAll() {
     return this.userRepo.find();
-  }
+ }
 
-  async findOne(id: number){
+ async save(input: UsersInput){
+  const entity = new UserEntity();
+
+  const convertedEntity = this.usersConverter.inputToNewEntity(input, entity);
+
+  const savedEntity = await this.userRepo.clear(convertedEntity);
+
+
+ }
+
+ async findOne(id: number){
     const userEntity = await this.userRepo.findOne({where: { id } });
 
-    const userOutput = new UsersOutput();
-    userOutput.id = userEntity.id;
-    userOutput.name = userEntity.name;
-    userOutput.active = userEntity.active;
-    userOutput.createdAt = userEntity.createdAt;
-    userOutput.updatedAt = userEntity.updateAt;
+    const output =  this.usersConverter.entityToOutput(userEntity);
 
-    return userOutput;
-  }
+    return output;
+ }
 
  async updateName(id: number, name: string) {
     const userEntity = await this.userRepo.findOne({where: { id } });
@@ -43,18 +45,12 @@ export class UsersService {
 
     const userSaved = await this.userRepo.save(userEntity);
 
-    const userOutput = new UsersOutput();
+    const output =  this.usersConverter.entityToOutput(userSaved);
 
-    userOutput.id = userEntity.id;
-    userOutput.name = userEntity.name;
-    userOutput.active = userEntity.active;
-    userOutput.createdAt = userEntity.createdAt;
-    userOutput.updatedAt = userEntity.updateAt;
+    return output;
+ }
 
-    return userOutput
-  }
-
-  remove(id: number) {
+remove(id: number) {
     return `This action removes a #${id} user`;
   }
 }
