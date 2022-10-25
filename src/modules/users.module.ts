@@ -6,7 +6,7 @@ import UserEntity from '../models/entities/user.entity';
 import UsersConverter from '../models/converters/users.converter';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity]), UsersConverter],
+  imports: [TypeOrmModule.forFeature([UserEntity])],
   controllers: [UsersController],
   providers: [UsersService, UsersConverter],
 })

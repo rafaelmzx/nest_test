@@ -7,23 +7,24 @@ import { AppConfigModule } from './appconfig.module';
 import UserEntity from './models/entities/user.entity';
 
 @Module({
-  imports: [    
+  imports: [
     TypeOrmModule.forRoot({
-    type: 'postgres',
-    host: process.env.DB_HOST,
-    port: 5432,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    entities: [UserEntity],
-    synchronize: false,
-    ssl: {
-      rejectUnauthorized: false,
-    }
-  }),
-  AppConfigModule,
-  UsersModule,
-],
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: 5432,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      entities: [UserEntity],
+      synchronize: false,
+      // migrations: ['./src/migrations/*.ts'],
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    }),
+    AppConfigModule,
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

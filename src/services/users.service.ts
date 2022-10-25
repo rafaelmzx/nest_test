@@ -3,7 +3,6 @@ import { Repository } from 'typeorm';
 import UserEntity from '../models/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
-
 import UsersOutput from '../models/dto/output/users.output';
 import UsersConverter from '../models/converters/users.converter';
 import UsersInput from '../models/dto/input/users.input';
@@ -16,41 +15,64 @@ export class UsersService {
     private readonly usersConverter: UsersConverter,
   ) {}
 
- findAll() {
-    return this.userRepo.find();
- }
+  async findAll(): Promise<UsersOutput[]> {
+    const userEntities = await this.userRepo.find();
 
- async save(input: UsersInput){
-  const entity = new UserEntity();
+    const outputList = userEntities.map((entity) => {
+      return this.usersConverter.entityToOutput(entity);
+    });
 
-  const convertedEntity = this.usersConverter.inputToNewEntity(input, entity);
+    return outputList;
+  }
 
-  const savedEntity = await this.userRepo.clear(convertedEntity);
+  async save(input: UsersInput) {
+    const entity = new UserEntity();
 
+    const convertedEntity = this.usersConverter.inputToNewEntity(input, entity);
 
- }
+    const savedEntity = await this.userRepo.save(convertedEntity);
 
- async findOne(id: number){
-    const userEntity = await this.userRepo.findOne({where: { id } });
-
-    const output =  this.usersConverter.entityToOutput(userEntity);
+    const output = this.usersConverter.entityToOutput(savedEntity);
 
     return output;
- }
+  }
 
- async updateName(id: number, name: string) {
-    const userEntity = await this.userRepo.findOne({where: { id } });
+  async update(id: number, input: UsersInput): Promise<UsersOutput> {
+    const userEntity = await this.userRepo.findOne({ where: { id: id } });
+
+    const convertedEntity = this.usersConverter.inputToNewEntity(
+      input,
+      userEntity,
+    );
+
+    const savedEntity = await this.userRepo.save(convertedEntity);
+
+    const output = this.usersConverter.entityToOutput(savedEntity);
+
+    return output;
+  }
+
+  async findOne(id: number) {
+    const userEntity = await this.userRepo.findOne({ where: { id } });
+
+    const output = this.usersConverter.entityToOutput(userEntity);
+
+    return output;
+  }
+
+  async updateName(id: number, name: string) {
+    const userEntity = await this.userRepo.findOne({ where: { id } });
 
     userEntity.name = name;
 
     const userSaved = await this.userRepo.save(userEntity);
 
-    const output =  this.usersConverter.entityToOutput(userSaved);
+    const output = this.usersConverter.entityToOutput(userSaved);
 
     return output;
- }
+  }
 
-remove(id: number) {
+  remove(id: number) {
     return `This action removes a #${id} user`;
   }
 }
