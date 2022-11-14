@@ -1,12 +1,15 @@
-import {ApiProperty} from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger';
 
-export default class UsersInput{
-    @ApiProperty()
-    id: number;
-    
-    @ApiProperty()
-    name: string;
+export default class UsersInput {
+  @ApiProperty()
+  id?: number;
 
-    @ApiProperty()
-    active: boolean;
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  password: string;
+
+  @ApiProperty()
+  active: boolean;
 }

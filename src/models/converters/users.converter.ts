@@ -6,12 +6,13 @@ import UsersInput from '../dto/input/users.input';
 
 @Injectable()
 export default class UsersConverter {
-  inputToNewEntity(input: UsersInput, entity: UserEntity) {
+  inputToEntity(input: UsersInput, entity: UserEntity) {
     entity.id = input.id;
     entity.name = input.name;
+    entity.password = input.password;
     entity.active = input.active;
     entity.createdAt = new Date();
-    entity.updateAt = new Date();
+    entity.updatedAt = new Date();
 
     return entity;
   }
@@ -23,7 +24,7 @@ export default class UsersConverter {
     output.name = entity.name;
     output.active = entity.active;
     output.createdAt = entity.createdAt;
-    output.updatedAt = entity.updateAt;
+    output.updatedAt = entity.updatedAt;
 
     return output;
   }

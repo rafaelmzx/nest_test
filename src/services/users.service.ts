@@ -28,7 +28,7 @@ export class UsersService {
   async save(input: UsersInput) {
     const entity = new UserEntity();
 
-    const convertedEntity = this.usersConverter.inputToNewEntity(input, entity);
+    const convertedEntity = this.usersConverter.inputToEntity(input, entity);
 
     const savedEntity = await this.userRepo.save(convertedEntity);
 
@@ -40,7 +40,7 @@ export class UsersService {
   async update(id: number, input: UsersInput): Promise<UsersOutput> {
     const userEntity = await this.userRepo.findOne({ where: { id: id } });
 
-    const convertedEntity = this.usersConverter.inputToNewEntity(
+    const convertedEntity = this.usersConverter.inputToEntity(
       input,
       userEntity,
     );
@@ -71,6 +71,7 @@ export class UsersService {
 
     return output;
   }
+
 
   remove(id: number) {
     return `This action removes a #${id} user`;
