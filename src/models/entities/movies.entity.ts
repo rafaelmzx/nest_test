@@ -10,4 +10,16 @@ export default class MoviesEntity {
 
   @Column({ name: 'bannerURL', type: 'varchar' })
   bannerURL: string;
+
+  @Column({
+    name: 'criado_em',
+    type: 'timestamp',
+  })
+  createdAt: Date;
+
+  @Column({
+    name: 'atualizado_em',
+    type: 'timestamp',
+  })
+  updatedAt: Date;
 }

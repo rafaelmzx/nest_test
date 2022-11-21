@@ -9,4 +9,10 @@ export default class MoviesOutput{
 
     @ApiProperty()
     bannerURL: string;
+
+    @ApiProperty()
+    createdAt: Date;
+
+    @ApiProperty()
+    updatedAt: Date;
 }

@@ -11,6 +11,8 @@ export default class MoviesConverter {
     entity.id = input.id;
     entity.name = input.name;
     entity.bannerURL = input.bannerURL;
+    entity.createdAt = new Date();
+    entity.updatedAt = new Date();
 
     return entity;
   }
@@ -21,6 +23,8 @@ export default class MoviesConverter {
     output.id = entity.id;
     output.name = entity.name;
     output.bannerURL = entity.bannerURL;
+    output.createdAt = entity.createdAt;
+    output.updatedAt = entity.updatedAt;
 
     return output;
   }
