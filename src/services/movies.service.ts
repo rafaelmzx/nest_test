@@ -73,7 +73,7 @@ export class MoviesService {
   }
 
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    return await this.userRepo.delete(id);
   }
 }
